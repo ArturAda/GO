@@ -10,6 +10,9 @@ func NewStorageMap() Storage {
 }
 
 func (storage *StorageMap) add(book *Book, hash Hash) idType {
+	if storage.books == nil {
+		storage.books = make(map[int][]*Book)
+	}
 	book.id[0] = hash(book)[0]
 	storage.books[book.id[0]] = append(storage.books[book.id[0]], book)
 	book.id[1] = len(storage.books[book.id[0]]) - 1
@@ -29,7 +32,8 @@ func (storage *StorageMap) all() []Book {
 	position := 0
 	for key := range storage.books {
 		for i := 0; i < len(storage.books[key]); i++ {
-			library[position] = *storage.books[key][i]
+			library[position] = *(storage.books[key][i])
+			position++
 		}
 	}
 	return library

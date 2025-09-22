@@ -51,10 +51,9 @@ func main() {
 		Year:    1866,
 		Pages:   672,
 	}
-	fmt.Println(book1)
 	lib := library.Library{}
 	lib.SetStorage(library.NewStorageSlice())
-	lib.SetHash(library.GetHash)
+	lib.SetHash(library.FirstHash)
 	lib.Add(book1)
 	lib.Add(book2)
 	lib.Add(book3)
@@ -68,4 +67,23 @@ func main() {
 	fmt.Println(lib.Remove(book5))
 	fmt.Println(lib.FindBooks("Design Patterns: Elements of Reusable Object-Oriented Software"))
 	fmt.Println(lib.AllBooks())
+	fmt.Println(lib.FindBooks("Hello, World!"))
+	lib.SetStorage(library.NewStorageMap())
+	lib.SetHash(library.SecondHash)
+	fmt.Println()
+	fmt.Println()
+	lib.Add(book5)
+	lib.Add(book3)
+	lib.Add(book1)
+	lib.Add(book6)
+	fmt.Println(book5)
+	fmt.Println(lib.AllBooks())
+	fmt.Println(lib.Remove(book6))
+	fmt.Println(lib.AllBooks())
+	fmt.Println(lib.FindBooks("Design Patterns: Elements of Reusable Object-Oriented Software"))
+	fmt.Println(lib.Remove(book5))
+	fmt.Println(lib.FindBooks("Design Patterns: Elements of Reusable Object-Oriented Software"))
+	fmt.Println(lib.AllBooks())
+	fmt.Println(lib.FindBooks("Abacaba"))
+
 }

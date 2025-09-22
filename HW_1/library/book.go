@@ -1,8 +1,7 @@
 package library
 
 import (
-	"math/rand"
-	"time"
+	"hash/fnv"
 	"unicode/utf8"
 )
 
@@ -52,7 +51,7 @@ func (bookF Book) Equal(bookS Book) bool {
 
 type Hash func(book *Book) idType
 
-func GetHash(book *Book) idType {
+func FirstHash(book *Book) idType {
 	var hash [2]int64
 	for i := 0; i < len(book.Title); {
 		r, size := utf8.DecodeRuneInString(book.Title[i:])
@@ -71,6 +70,8 @@ func GetHash(book *Book) idType {
 	return [2]int{int(hash[0]), int(hash[1])}
 }
 
-func NewHash(book *Book) idType {
-	return [2]int{rand.New(rand.NewSource(time.Now().UnixNano())).Intn(int(x)), 0}
+func SecondHash(book *Book) idType {
+	hashFunc := fnv.New64a()
+	hashFunc.Write([]byte(book.Title))
+	return [2]int{int(hashFunc.Sum64() % uint64(x)), 0}
 }
