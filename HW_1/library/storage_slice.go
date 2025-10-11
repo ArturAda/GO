@@ -1,5 +1,7 @@
 package library
 
+import "reflect"
+
 type StorageSlice struct {
 	books [][]*Book
 	count int
@@ -64,7 +66,7 @@ func (storage *StorageSlice) remove(id idType) bool {
 func (storage *StorageSlice) findBook(book Book, hash Hash) *Book {
 	id := hash(&book)[0] % len(storage.books)
 	for i := 0; i < len(storage.books[id]); i++ {
-		if book.Equal(*storage.books[id][i]) {
+		if reflect.DeepEqual(book, *storage.books[id][i]) {
 			return storage.books[id][i]
 		}
 	}

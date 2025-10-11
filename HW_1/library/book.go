@@ -25,30 +25,6 @@ func (book *Book) Update(Title string, Authors []string, Edition int, Year int, 
 	return *book
 }
 
-func (bookF Book) Equal(bookS Book) bool {
-	if bookF.Edition != bookS.Edition {
-		return false
-	}
-	if bookF.Year != bookS.Year {
-		return false
-	}
-	if bookF.Pages != bookS.Pages {
-		return false
-	}
-	if bookF.Title != bookS.Title {
-		return false
-	}
-	if len(bookF.Authors) != len(bookS.Authors) {
-		return false
-	}
-	for i := 0; i < len(bookF.Authors); i++ {
-		if bookF.Authors[i] != bookS.Authors[i] {
-			return false
-		}
-	}
-	return true
-}
-
 type Hash func(book *Book) idType
 
 func FirstHash(book *Book) idType {

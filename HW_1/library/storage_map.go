@@ -1,5 +1,7 @@
 package library
 
+import "reflect"
+
 type StorageMap struct {
 	books map[int][]*Book
 	count int
@@ -28,11 +30,11 @@ func (storage *StorageMap) find(id idType) Book {
 }
 
 func (storage *StorageMap) all() []Book {
-	library := make([]Book, storage.count)
+	library := make([]Book, 0, storage.count)
 	position := 0
 	for key := range storage.books {
 		for i := 0; i < len(storage.books[key]); i++ {
-			library[position] = *(storage.books[key][i])
+			library = append(library, *(storage.books[key][i]))
 			position++
 		}
 	}
@@ -53,7 +55,7 @@ func (storage *StorageMap) remove(id idType) bool {
 func (storage *StorageMap) findBook(book Book, hash Hash) *Book {
 	id := hash(&book)[0]
 	for i := 0; i < len(storage.books[id]); i++ {
-		if book.Equal(*storage.books[id][i]) {
+		if reflect.DeepEqual(book, *storage.books[id][i]) {
 			return storage.books[id][i]
 		}
 	}

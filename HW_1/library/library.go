@@ -1,5 +1,7 @@
 package library
 
+import "reflect"
+
 type Library struct {
 	storage Storage
 	hash    Hash
@@ -27,7 +29,7 @@ func (library *Library) AllBooks() []Book {
 
 func (library *Library) Remove(book Book) bool {
 	realBook := library.storage.findBook(book, library.hash)
-	if (Book{}).Equal(*realBook) {
+	if reflect.DeepEqual(Book{}, *realBook) {
 		return false
 	}
 	library.storage.remove(realBook.id)
