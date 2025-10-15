@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -22,10 +23,27 @@ func getNewErrorJSON(message string) errorJSON {
 
 func writeJSON(output http.ResponseWriter, status int, value any, logger *log.Logger) {
 	output.Header().Set("Content-Type", "application/json; charset=utf-8")
+	bytes_, err := json.Marshal(value)
+	if err != nil {
+		if logger != nil {
+			logger.Printf("encode error: %v", err)
+		}
+		http.Error(output, `{"message":"internal error"}`, http.StatusInternalServerError)
+		return
+	}
 	output.WriteHeader(status)
-	err := json.NewEncoder(output).Encode(value)
+	_, err = output.Write(bytes_)
 	if err != nil && logger != nil {
 		logger.Printf("write error: %v", err)
+	}
+	if logger != nil {
+		var pretty bytes.Buffer
+		err = json.Indent(&pretty, bytes_, "", "  ")
+		if err == nil {
+			logger.Printf("responded %d:\n%s", status, pretty.String())
+		} else {
+			logger.Printf("responded %d %s", status, string(bytes_))
+		}
 	}
 }
 
@@ -137,12 +155,12 @@ func (app *HTTPApp) Start() error {
 func (app *HTTPApp) Stop(ctx context.Context) error {
 	ctx, cancel := context.WithTimeout(ctx, app.closingAppTime)
 	defer cancel()
-	app.GetLog().Println("graceful shutdown...")
+	app.GetLog().Printf("graceful shutdown: server %q...", app.GetName())
 	err := app.server.Shutdown(ctx)
 	if err != nil {
-		return fmt.Errorf("http shutdown failed: %w", err)
+		return fmt.Errorf("http shutdown failed for %q: %w", app.GetName(), err)
 	}
-	app.GetLog().Println("http server stopped gracefully")
+	app.GetLog().Printf("server %q stopped gracefully", app.GetName())
 	return nil
 }
 
