@@ -1,0 +1,16 @@
+services:
+  balance_server:
+    build: .
+    container_name: balance_server
+    environment:
+      - HTTP_ADDRESS=:8080
+      - STORAGE_TYPE=file
+      - JSON_PATH=/files/balances.json
+    volumes:
+      - balances_data:/files
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  balances_data: {}
