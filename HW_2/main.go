@@ -31,7 +31,7 @@ func main() {
 		apps.SetLoggPrefix("[srv-3] "),
 		apps.SetLoggFlags(log.LstdFlags|log.Lmicroseconds),
 	)
-	s3.BaseApp.UpdateLogger(apps.SetOutput(customLog.Writer()), apps.SetPrefix("[srv-3-custom] "))
+	s3.UpdateLogger(apps.SetOutput(customLog.Writer()), apps.SetPrefix("[srv-3-custom]"))
 	s4 := apps.NewHTTPApp(
 		apps.SetName("srv-4"),
 		apps.SetVersion("v3.0.0"),

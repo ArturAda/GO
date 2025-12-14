@@ -1,9 +1,15 @@
 package apps
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+)
+
+const (
+	defaultHostname = "localhost"
+	defaultVersion  = "v1.0.0"
 )
 
 type logStructure struct {
@@ -43,12 +49,16 @@ type BaseApp struct {
 
 func NewBaseApp(newName, newVersion string, functions ...loggFunc) *BaseApp {
 	if newName == "" {
-		newName = "localhost"
+		newName = defaultHostname
 	}
 	if newVersion == "" {
-		newVersion = "v1.0.0"
+		newVersion = defaultVersion
 	}
-	defaultLogg := logStructure{output: os.Stdout, prefix: "[" + newName + "]", flags: log.LstdFlags | log.Lmicroseconds | log.Llongfile}
+	defaultLogg := logStructure{
+		output: os.Stdout,
+		prefix: fmt.Sprintf("[%s]", newName),
+		flags:  log.LstdFlags | log.Lmicroseconds | log.Llongfile,
+	}
 	for _, function := range functions {
 		if function != nil {
 			function(&defaultLogg)
@@ -75,7 +85,7 @@ func (app *BaseApp) UpdateLogger(functions ...loggFunc) {
 		newConfig.output = os.Stdout
 	}
 	if newConfig.prefix == "" {
-		newConfig.prefix = "[" + app.name + "]"
+		newConfig.prefix = fmt.Sprintf("[%s]", app.name)
 	}
 	if newConfig.flags == 0 {
 		newConfig.flags = log.LstdFlags | log.Lmicroseconds | log.Llongfile

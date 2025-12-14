@@ -17,6 +17,11 @@ type errorJSON struct {
 	Message string `json:"message"`
 }
 
+type correctJSON struct {
+	Status   string `json:"status"`
+	WorkTime int    `json:"work_time"`
+}
+
 func getNewErrorJSON(message string) errorJSON {
 	return errorJSON{Message: message}
 }
@@ -61,7 +66,7 @@ func SetName(newName string) httpFunc {
 	return func(app *HTTPApp) {
 		if newName != "" {
 			app.name = newName
-			app.UpdateLogger(SetPrefix("[" + newName + "]"))
+			app.UpdateLogger(SetPrefix(fmt.Sprintf("[%s]", newName)))
 		}
 	}
 }
@@ -208,12 +213,8 @@ func (app *HTTPApp) getHardOpHandler(output http.ResponseWriter, request *http.R
 	case <-nanoTime.C:
 	}
 	if randv2.IntN(2) == 0 {
-		writeJSON(output, http.StatusInternalServerError, getNewErrorJSON("Hard operation timeout"), app.GetLog())
+		writeJSON(output, http.StatusInternalServerError, getNewErrorJSON("Random operation failure"), app.GetLog())
 		return
-	}
-	type correctJSON struct {
-		Status   string `json:"status"`
-		WorkTime int    `json:"work_time"`
 	}
 	writeJSON(output, http.StatusOK, correctJSON{Status: "All done!", WorkTime: globalTime}, app.GetLog())
 }
