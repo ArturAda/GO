@@ -1,4 +1,4 @@
-package functions_and_interface
+package service
 
 import (
 	"fmt"

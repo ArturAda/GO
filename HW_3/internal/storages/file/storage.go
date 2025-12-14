@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/ArturAda/GO/HW_3/internal/exceptions"
-	"github.com/ArturAda/GO/HW_3/internal/functions_and_interface"
+	"github.com/ArturAda/GO/HW_3/internal/service"
 )
 
 type storage struct {
@@ -18,7 +18,7 @@ type storage struct {
 	data     map[string]int64
 }
 
-func New(path string) (functions_and_interface.BalanceRepository, error) {
+func New(path string) (service.BalanceRepository, error) {
 	str := &storage{
 		filepath: path,
 		data:     make(map[string]int64),

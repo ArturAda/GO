@@ -1,4 +1,4 @@
-package functions_and_interface
+package service
 
 type BalanceRepository interface {
 	Get(userID string) (int64, error)
